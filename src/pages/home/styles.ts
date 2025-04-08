@@ -4,24 +4,23 @@ export const Container = styled('div', {
   maxWidth: 'calc(100vw - (100vw - 1160vw) / 2)',
   height: '100vh',
   marginLeft: 'auto',
-  background: '$gray900',
   display: 'flex',
   alignItems: 'center',
   gap: '$20',
 })
 
 export const Hero = styled('div', {
-  maxWidth: 400,
+  maxWidth: 480,
   padding: '0 $10',
 
-  [`${Heading}`]: {
+  [` > ${Heading}`]: {
     '@media(max-width: 600px)': {
       fonSize: '$6xl',
     },
   },
-  [`${Text}`]: {
+  [` > ${Text}`]: {
     marginTop: '$2',
-    color: '$gray300',
+    color: '$gray200',
   },
 })
 

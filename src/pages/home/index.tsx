@@ -3,17 +3,22 @@ import Image from 'next/image'
 import { Container, Hero, Preview } from './styles'
 
 import previewImage from '../../assets/app-preview.png'
+import { ClaimUsernameForm } from './components/ClaimUsernameForm'
 
 export default function Home() {
   return (
     <Container>
       <Hero>
-        <Heading size="xl">Agendamento descomplicado</Heading>
-        <Text size="lg">
+        <Heading as="h1" size="4xl">
+          Agendamento descomplicado
+        </Heading>
+        <Text size="xl">
           {' '}
           Conecte seu calendario e permita que as pessoas marquem agendamentos
           no seu tempo livre.
         </Text>
+
+        <ClaimUsernameForm />
       </Hero>
       <Preview>
         <Image
