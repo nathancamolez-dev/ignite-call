@@ -1,3 +1,4 @@
+import { api } from '@/lib/axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Heading, MultiStep, Text, TextInput } from '@ignite-ui/react'
 import { useRouter } from 'next/router'
@@ -19,7 +20,14 @@ const registerFormSchema = z.object({
 type RegisterFormData = z.infer<typeof registerFormSchema>
 
 async function handleRegister(data: RegisterFormData) {
-  console.log(data)
+  try {
+    await api.post('/users', {
+      name: data.name,
+      username: data.username,
+    })
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 export default function Register() {
