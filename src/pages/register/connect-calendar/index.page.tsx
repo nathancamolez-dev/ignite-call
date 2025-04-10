@@ -1,4 +1,5 @@
 import { Button, Heading, MultiStep, Text } from '@ignite-ui/react'
+import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { ArrowRight } from 'phosphor-react'
 import { useEffect } from 'react'
@@ -7,6 +8,7 @@ import { Container, Header } from '../styles'
 import { ConnectBox, ConnectItem } from './styles'
 
 export default function connectCalendar() {
+  const session = useSession()
   const { setValue } = useForm()
 
   const router = useRouter()
@@ -32,9 +34,19 @@ export default function connectCalendar() {
       <ConnectBox>
         <ConnectItem>
           <Text>Google Calendar</Text>
-          <Button variant="secondary" size="sm">
-            Conectar
-            <ArrowRight />
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => signIn('google')}
+            disabled={session.status === 'authenticated'}
+          >
+            {session.status === 'authenticated' ? (
+              <span>Conectado</span>
+            ) : (
+              <>
+                <span>Conectar</span> <ArrowRight />
+              </>
+            )}
           </Button>
         </ConnectItem>
         <Button type="submit">
