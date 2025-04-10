@@ -20,21 +20,6 @@ const registerFormSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerFormSchema>
 
-async function handleRegister(data: RegisterFormData) {
-  try {
-    await api.post('/users', {
-      name: data.name,
-      username: data.username,
-    })
-  } catch (err) {
-    if (err instanceof AxiosError && err?.response?.data?.message) {
-      alert(err.response.data.message)
-      return
-    }
-    console.log(err)
-  }
-}
-
 export default function Register() {
   const {
     register,
@@ -52,6 +37,23 @@ export default function Register() {
       setValue('username', String(router.query.username))
     }
   }, [router.query?.username, setValue])
+
+  async function handleRegister(data: RegisterFormData) {
+    try {
+      await api.post('/users', {
+        name: data.name,
+        username: data.username,
+      })
+
+      await router.push('/register/connect-calendar')
+    } catch (err) {
+      if (err instanceof AxiosError && err?.response?.data?.message) {
+        alert(err.response.data.message)
+        return
+      }
+      console.log(err)
+    }
+  }
 
   return (
     <Container>
@@ -87,7 +89,7 @@ export default function Register() {
           )}
         </label>
 
-        <Button type="submit">
+        <Button type="submit" disabled={isSubmitting}>
           {' '}
           Proximo passo
           <ArrowRight />
