@@ -1,31 +1,29 @@
 import { Button, Heading, MultiStep, Text } from '@ignite-ui/react'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { ArrowRight } from 'phosphor-react'
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { ArrowRight, Check } from 'phosphor-react'
 import { Container, Header } from '../styles'
-import { ConnectBox, ConnectItem } from './styles'
+import { AuthError, ConnectBox, ConnectItem } from './styles'
 
-export default function connectCalendar() {
+export default function ConnectCalendar() {
   const session = useSession()
-  const { setValue } = useForm()
 
   const router = useRouter()
 
-  useEffect(() => {
-    if (router.query.username) {
-      setValue('username', String(router.query.username))
-    }
-  }, [router.query?.username, setValue])
+  const hasAuthError = !!router.query.error
+  const isSignedIn = session.status === 'authenticated'
+
+  async function handleConnectCalendar() {
+    await signIn('google')
+  }
 
   return (
     <Container>
       <Header>
-        <Heading as="strong">Conect sua agenda!</Heading>
+        <Heading as="strong">Conecte sua agenda!</Heading>
         <Text>
-          Precisamos de algumas informações par criar o seu perfil! Ah, você
-          pdoe editar essas informações depois.
+          Conecte o seu calendário para verificar automaticamente as horas
+          ocupadas e os novos eventos à medida em que são agendados.
         </Text>
 
         <MultiStep size={4} currentStep={2} />
@@ -34,22 +32,31 @@ export default function connectCalendar() {
       <ConnectBox>
         <ConnectItem>
           <Text>Google Calendar</Text>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => signIn('google')}
-            disabled={session.status === 'authenticated'}
-          >
-            {session.status === 'authenticated' ? (
-              <span>Conectado</span>
-            ) : (
-              <>
-                <span>Conectar</span> <ArrowRight />
-              </>
-            )}
-          </Button>
+
+          {isSignedIn ? (
+            <Button disabled>
+              Conectado
+              <Check />
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleConnectCalendar}
+              disabled={isSignedIn}
+            >
+              Conectar
+              <ArrowRight />
+            </Button>
+          )}
         </ConnectItem>
-        <Button type="submit">
+        {hasAuthError && (
+          <AuthError>
+            Falha ao se conectar ao Google, vrifique se você habilitou as
+            persissões de acesso ao Google Calendar.
+          </AuthError>
+        )}
+        <Button type="submit" disabled={!isSignedIn}>
           Proximo passo
           <ArrowRight />
         </Button>
