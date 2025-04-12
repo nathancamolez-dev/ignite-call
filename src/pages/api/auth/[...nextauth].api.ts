@@ -1,6 +1,6 @@
-import { env } from '@/env'
 import NextAuth, { type NextAuthOptions } from 'next-auth'
 import Google from 'next-auth/providers/google'
+import { env } from '../../../env'
 
 export const authOptions: NextAuthOptions = {
   providers: [
