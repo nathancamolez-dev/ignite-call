@@ -18,8 +18,8 @@ model User {
   avatar_url String?
 
   created_at DateTime  @default(now())
-  Account    Account[]
-  Session    Session[]
+  accounts   Account[]
+  sessions   Session[]
 
   @@map("users")
 }
@@ -40,6 +40,8 @@ model Account {
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@unique([provider, provider_account_id])
+  @@index([user_id])
   @@map("accounts")
 }
 
@@ -50,5 +52,6 @@ model Session {
   expires       DateTime
   user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id])
   @@map("sessions")
 }
