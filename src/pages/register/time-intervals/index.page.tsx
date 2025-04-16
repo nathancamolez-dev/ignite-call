@@ -10,6 +10,7 @@ import {
 import { ArrowRight } from 'phosphor-react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { convertTimeStringToMinutes } from '../../../utils/conver-time-string-to-minutes'
 import { getWeekDays } from '../../../utils/get-week-days'
 import { Container, FormError, Header } from '../styles'
 import {
@@ -34,10 +35,32 @@ const timeIntervalsFormSchema = z.object({
     .transform(intervals => intervals.filter(interval => interval.enabled))
     .refine(intervals => intervals.length > 0, {
       message: 'Você precisa selecionar pelo menos um dia da semana.',
-    }),
+    })
+    .transform(intervals => {
+      return intervals.map(interval => {
+        return {
+          weekDay: interval.weekday,
+          startTimeInMinutes: convertTimeStringToMinutes(interval.startTime),
+          endTimeInMinutes: convertTimeStringToMinutes(interval.endTime),
+        }
+      })
+    })
+    .refine(
+      intervals => {
+        return intervals.every(
+          intervals =>
+            intervals.endTimeInMinutes - 60 >= intervals.startTimeInMinutes
+        )
+      },
+      {
+        message:
+          'O horario de termino deve ser pelo menos 1 hora distante do inicio',
+      }
+    ),
 })
 
-type TimeIntervalsFormData = z.infer<typeof timeIntervalsFormSchema>
+type TimeIntervalsFormInput = z.input<typeof timeIntervalsFormSchema>
+type TimeIntervalsFormOutput = z.output<typeof timeIntervalsFormSchema>
 
 export default function TimeIntervals() {
   const {
@@ -47,7 +70,11 @@ export default function TimeIntervals() {
     watch,
     formState: { isSubmitting, errors },
   } = useForm({
-    resolver: zodResolver(timeIntervalsFormSchema),
+    resolver: zodResolver<
+      TimeIntervalsFormInput,
+      unknown,
+      TimeIntervalsFormOutput
+    >(timeIntervalsFormSchema),
     defaultValues: {
       intervals: [
         { weekday: 0, enabled: false, startTime: '08:00', endTime: '18:00' },
@@ -70,8 +97,9 @@ export default function TimeIntervals() {
 
   const weekDays = getWeekDays()
 
-  async function handleSetTimeIntervals(data: TimeIntervalsFormData) {
-    console.log(data)
+  async function handleSetTimeIntervals(data: unknown) {
+    const formData = data as TimeIntervalsFormOutput
+    console.log(formData)
   }
 
   return (
