@@ -16,7 +16,5 @@ export default async function handler(
     buildNextAuthOptions(req, res)
   )
 
-  return {
-    session,
-  }
+  return res.json({ session })
 }
