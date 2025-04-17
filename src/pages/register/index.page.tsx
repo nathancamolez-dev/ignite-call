@@ -61,7 +61,7 @@ export default function Register() {
         <Heading as="strong">
           <Text>
             Precisamos de algumas informações par criar o seu perfil! Ah, você
-            pdoe editar essas informações depois.
+            pode editar essas informações depois.
           </Text>
 
           <MultiStep size={4} currentStep={1} />
