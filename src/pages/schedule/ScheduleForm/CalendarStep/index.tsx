@@ -1,5 +1,5 @@
 import { Calendar } from '../../../../components/Calendar'
-import { Container } from '../../[username]/styles'
+import { Container } from './styles'
 
 export function CalendarStep() {
   return (
