@@ -28,7 +28,6 @@ export function CalendarStep() {
             <TimePickerItem>15:00h</TimePickerItem>
             <TimePickerItem>17:00h</TimePickerItem>
             <TimePickerItem>18:00h</TimePickerItem>
-            <TimePickerItem>19:00h</TimePickerItem>
           </TimePickerList>
         </TimePicker>
       )}
