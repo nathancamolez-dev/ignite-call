@@ -23,7 +23,9 @@ type CalendarWeeks = CalendarWeek[]
 
 interface BlockedDates {
   blockedWeekDays: number[]
+  blockedDates: number[]
 }
+
 interface CalendarProps {
   selectedDate: Date | null
   onDateSelected: (date: Date) => void
@@ -65,7 +67,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
       const response = await api.get(`/users/${username}/blocked-dates`, {
         params: {
           year: currentDate.get('year'),
-          month: currentDate.get('month'),
+          month: currentDate.get('month') + 1,
         },
       })
 
@@ -86,7 +88,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
 
     const firstWeekDay = currentDate.get('day')
 
-    const previousMonthFill = Array.from({
+    const previousMonthFillArray = Array.from({
       length: firstWeekDay,
     })
       .map((_, i) => {
@@ -98,17 +100,16 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
       'date',
       currentDate.daysInMonth()
     )
-
     const lastWeekDay = lastDayInCurrentMonth.get('day')
 
-    const nextMonthFill = Array.from({
+    const nextMonthFillArray = Array.from({
       length: 7 - (lastWeekDay + 1),
     }).map((_, i) => {
       return lastDayInCurrentMonth.add(i + 1, 'day')
     })
 
     const calendarDays = [
-      ...previousMonthFill.map(date => {
+      ...previousMonthFillArray.map(date => {
         return { date, disabled: true }
       }),
       ...daysInMonthArray.map(date => {
@@ -116,10 +117,11 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           date,
           disabled:
             date.endOf('day').isBefore(new Date()) ||
-            blockedDates.blockedWeekDays.includes(date.get('day')),
+            blockedDates.blockedWeekDays.includes(date.get('day')) ||
+            blockedDates.blockedDates.includes(date.get('date')),
         }
       }),
-      ...nextMonthFill.map(date => {
+      ...nextMonthFillArray.map(date => {
         return { date, disabled: true }
       }),
     ]
