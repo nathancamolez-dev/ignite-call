@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import { google } from 'googleapis'
-import Credentials from 'next-auth/providers/credentials'
 import { prisma } from './prisma'
 
 export async function getGoogleOAuthToken(userId: string) {
