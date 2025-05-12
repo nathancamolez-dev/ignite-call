@@ -153,9 +153,7 @@ export function PrismaAdapter(
           provider_account_id: account.providerAccountId,
           refresh_token: account.refresh_token,
           access_token: account.access_token,
-          expires_at: account.expires_at
-            ? new Date(account.expires_at * 1000)
-            : null,
+          expires_at: account.expires_at,
           token_type: account.token_type,
           scope: account.scope,
           id_token: account.id_token,
